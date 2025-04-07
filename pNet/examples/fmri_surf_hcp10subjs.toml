@@ -18,12 +18,12 @@ file_Brain_Template = "/home/wsl/anaconda3/envs/pNet/lib/python3.9/site-packages
 K = 2
 ## Output: setup the output folder
 #dir_pnet_result = "/cbica/home/fanyo/fmripnet/examples/FN2_Surface"
-dir_pnet_result = "/home/wsl/pNet/src/pnet/examples/result"
+dir_pnet_result = "/home/wsl/project/pNet/pNet/result"
 
 ## specify the method for computing personalized FNs: SR-NMF or GIG-ICA
 # for GIG-ICA group level FNs (file_gFN) have to be provided
 # and gFN_settings will be ignored
-method="SR-NMF"
+method = "SR-NMF"
 
 ## date type and format information
 # data type is surface
@@ -52,11 +52,11 @@ nTPoints = 300   # all avaiable time points will be used if seting a value large
 [hpc_settings]
 [hpc_settings.pnet_env]
 # specify pnet installation information
-dir_pnet="/home/wsl/anaconda3/envs/pNet/lib/python3.9/site-packages/pnet"
+dir_pnet = "/home/wsl/anaconda3/envs/pNet/lib/python3.9/site-packages/pnet"
 #dir_env="/cbica/home/fanyo/.conda/envs/fmripnet"
-dir_env="/home/wsl/anaconda3/envs/pNet"
+dir_env = "/home/wsl/anaconda3/envs/pNet"
 #dir_python="/cbica/home/fanyo/.conda/envs/fmripnet/bin/python"
-dir_python="/home/wsl/anaconda3/envs/pNet/bin/python3.9"
+dir_python = "/home/wsl/anaconda3/envs/pNet/bin/python3.9"
 
 # specify pnet
 [hpc_settings.submit]
@@ -68,13 +68,13 @@ log_command = "-o "
 
 [hpc_settings.computation_resource]
 # Computation resource request
-memory_bootstrap= "200G"
-thread_bootstrap= 4
-memory_fusion= "10G"
-thread_fusion= 4
-memory_pFN= "10G"
-thread_pFN= 1
-memory_qc= "10G"
-thread_qc= 1
-memory_visualization= "20G"
-thread_visualization= 1
+memory_bootstrap = "200G"
+thread_bootstrap = 4
+memory_fusion = "10G"
+thread_fusion = 4
+memory_pFN = "10G"
+thread_pFN = 1
+memory_qc = "10G"
+thread_qc = 1
+memory_visualization = "20G"
+thread_visualization = 1
