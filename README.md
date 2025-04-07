@@ -2,6 +2,8 @@
 
 ---
 
+![logo](https://github.com/DouHuanHuan/pnet/blob/master/pNet/docs/png/pnet.png)
+
 pNet is a Python package of an [algorithm](<https://pubmed.ncbi.nlm.nih.gov/28483721>) for computing personalized,
 sparse, non-negative large-scale functional networks from functional magnetic resonance imaging (fMRI) data,
 facilitating effective characterization of individual variation
