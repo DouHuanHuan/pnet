@@ -46,6 +46,7 @@ pip install -r requirements.txt
 ## Run on standalone mode
 
 ```shell
+python fmripnet.py -c ./examples/fmri_surf_hcp10subjs.toml 
 ```
 
 ## Run on  server mode
