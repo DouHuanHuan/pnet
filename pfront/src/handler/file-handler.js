@@ -37,3 +37,4 @@ export const handlePredict = (file, setStatus) => () => {
         setStatus('completed');
     }, 2000);
 };
+
