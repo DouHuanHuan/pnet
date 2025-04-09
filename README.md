@@ -62,9 +62,6 @@ Then run the front server in the pfront directory
 npm install && npm run
 ```
 
-```
-pip install --extra-index-url https://wheels.vtk.org vtk-osmesa
-```
 
 # License
 
