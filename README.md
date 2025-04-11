@@ -1,6 +1,6 @@
 # [pnet](https://github.com/MLDataAnalytics/pNet)
 
-<img src="https://github.com/DouHuanHuan/pnet/blob/master/pNet/docs/png/pnet.png" width="200" />
+![pnet_image](https://github.com/user-attachments/assets/25809dc1-7757-48d0-8d69-c6a23164941b)
 
 pNet is a Python package of an [algorithm](<https://pubmed.ncbi.nlm.nih.gov/28483721>) for computing personalized,
 sparse, non-negative large-scale functional networks from functional magnetic resonance imaging (fMRI) data,
@@ -18,7 +18,6 @@ replicated
 in [Reproducible Sex Differences in Personalized Functional Network Topography in Youth](<https://www.biorxiv.org/content/10.1101/2024.09.26.615061v1>)), [dissociable multi-scale patterns of development in personalized brain networks](<https://pubmed.ncbi.nlm.nih.gov/35551181>), [multiscale functional connectivity patterns of the aging brain](<https://pubmed.ncbi.nlm.nih.gov/36731813>), [personalized functional brain network topography in youth cognition](<https://pubmed.ncbi.nlm.nih.gov/38110396>),
 and [Polygenic Risk Underlies Youth Psychopathology and Personalized Functional Brain Network Topography](<https://www.medrxiv.org/content/10.1101/2024.09.20.24314007v2>).
 
-![pnet_image](https://github.com/user-attachments/assets/25809dc1-7757-48d0-8d69-c6a23164941b)
 
 ## Getting started
 
@@ -63,9 +62,6 @@ Then run the front server in the pfront directory
 npm install && npm run
 ```
 
-```
-pip install --extra-index-url https://wheels.vtk.org vtk-osmesa
-```
 
 # License
 
