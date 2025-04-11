@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fmripnet"
+version = "0.1.0"
+description = "A neuroimaging analysis toolkit"
+readme = "README.md"
+requires-python = ">=3.9,<4.0"
+license = { text = "MIT" }
+authors = [
+    { name = "douzengrui", email = "douzengrui@163.com" }
+]
+
+# 如果你有 CLI 脚本，如 `fmripnet.py`
+[project.scripts]
+fmripnet = "pnet.cli.fmripnet:main"
+
+[tool.setuptools]
+packages = ["pnet"]  # 顶层模块
+
+[tool.setuptools.package-data]
+# 包含所有的静态文件
+"pnet" = [
+    "**/*.mat",
+    "**/*.nii.gz",
+    "**/*.jpg",
+    "**/*.png",
+    "**/*.html",
+    "**/*.json.zip",
+    "**/*.log",
+    "**/*.md"
+]
