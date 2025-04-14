@@ -2,9 +2,8 @@
 import argparse
 import sys
 
-import tomli
-
 import pnet
+import tomli
 
 
 def read_config(file_path):
@@ -57,7 +56,7 @@ def main(config_file='config.txt', HPC=None):
     print(f"nTPoints: {nTPoints}")
     '''
     if HPC is False:
-        pnet.workflow(
+        result = pnet.workflow(
             dir_pnet_result=dir_pnet_result,
             dataType=dataType,
             dataFormat=dataFormat,
@@ -75,6 +74,8 @@ def main(config_file='config.txt', HPC=None):
             nTPoints=nTPoints,
             Computation_Mode='CPU_Torch'
         )
+
+        print(result)
     else:
         # print(f"HCP={HPC}")
         pnet.workflow_cluster(
