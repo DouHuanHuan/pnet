@@ -206,12 +206,9 @@ def workflow(dir_pnet_result: str,
     # =============== Visualization =============== #
     setup_Visualization(dir_pnet_result, synchronized_view=synchronized_view,
                         synchronized_colorbar=synchronized_colorbar)
-    run_Visualization(dir_pnet_result)
+    result = run_Visualization(dir_pnet_result)
     # ============================================= #
-
-    # ================= Web Report ================ #
-    run_web_report(dir_pnet_result)
-    # ============================================= #
+    return result
 
 
 def workflow_simple(dir_pnet_result: str,

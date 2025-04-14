@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fmripnet"
-version = "1.0.1c"
+version = "1.0.2"
 description = "pNet: a python package for computing personalized fucntional networks"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -21,5 +21,5 @@ dependencies = [
     'tomli']
 
 [project.urls]
-Homepage = "https://github.com/MLDataAnalytics/pNet"
-Issues = "https://github.com/MLDataAnalytics/pNet/issues"
+Homepage = "https://github.com/DouHuanHuan/pnet"
+Issues = "https://github.com/DouHuanHuan/pnet/issues"

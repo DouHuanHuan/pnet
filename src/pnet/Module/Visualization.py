@@ -1224,10 +1224,11 @@ def run_gFN_Visualization(dir_pnet_result: str):
     Run preconfigured visualizations for gFNs
 
     :param dir_pnet_result: directory of the pnet result folder
-    :return:
+    :return: metadata dictionary of visualization result
 
-    Yuncong Ma, 2/8/2024
+    豆瑞瑞 Apr, 14/4/2025
     """
+    import os
 
     # get directories of sub-folders
     dir_pnet_dataInput, dir_pnet_FNC, dir_pnet_gFN, dir_pnet_pFN, _, _ = setup_result_folder(dir_pnet_result)
@@ -1244,7 +1245,6 @@ def run_gFN_Visualization(dir_pnet_result: str):
     # load basic settings
     dataType = setting['Data_Input']['Data_Type']
     dataFormat = setting['Data_Input']['Data_Format']
-
     FN_Method = setting['FN_Computation']['Method']
 
     # colorbar setting for visualization
@@ -1256,74 +1256,74 @@ def run_gFN_Visualization(dir_pnet_result: str):
 
     if dataType == 'Surface' and dataFormat == 'HCP Surface (*.cifti, *.mat)':
         K = gFN.shape[1]
-        file_output = [os.path.join(dir_pnet_gFN, str(int(i + 1)) + '.jpg') for i in range(K)]
+        file_output = [os.path.join(dir_pnet_gFN, f'{i + 1}.jpg') for i in range(K)]
         for i in range(K):
-            figure_title = 'FN ' + str(int(i + 1))
-            brain_map = gFN[:, i]
-            plot_FN_brain_surface_5view(brain_map, brain_template, color_function=None, threshold=threshold,
-                                        file_output=file_output[i], figure_title=figure_title,
-                                        colorbar_range_style=colorbar_range_style,
-                                        colorbar_scale=colorbar_scale,
-                                        colorbar_range_round=colorbar_range_round,
-                                        colorbar_label=colorbar_label)
+            plot_FN_brain_surface_5view(
+                gFN[:, i], brain_template, color_function=None, threshold=threshold,
+                file_output=file_output[i], figure_title=f'FN {i + 1}',
+                colorbar_range_style=colorbar_range_style, colorbar_scale=colorbar_scale,
+                colorbar_range_round=colorbar_range_round, colorbar_label=colorbar_label
+            )
 
     elif dataType == 'Surface' and dataFormat in ('MGH Surface (*.mgh)', 'MGZ Surface (*.mgz)'):
         K = gFN.shape[1]
-        file_output = [os.path.join(dir_pnet_gFN, str(int(i + 1)) + '.jpg') for i in range(K)]
+        file_output = [os.path.join(dir_pnet_gFN, f'{i + 1}.jpg') for i in range(K)]
         for i in range(K):
-            figure_title = 'FN ' + str(int(i + 1))
-            brain_map = gFN[:, i]
-            plot_FN_brain_surface_5view(brain_map, brain_template, color_function=None, threshold=threshold,
-                                        hemisphere_offset=100,
-                                        file_output=file_output[i], figure_title=figure_title,
-                                        colorbar_range_style=colorbar_range_style,
-                                        colorbar_scale=colorbar_scale,
-                                        colorbar_range_round=colorbar_range_round,
-                                        colorbar_label=colorbar_label)
+            plot_FN_brain_surface_5view(
+                gFN[:, i], brain_template, color_function=None, threshold=threshold,
+                hemisphere_offset=100,
+                file_output=file_output[i], figure_title=f'FN {i + 1}',
+                colorbar_range_style=colorbar_range_style, colorbar_scale=colorbar_scale,
+                colorbar_range_round=colorbar_range_round, colorbar_label=colorbar_label
+            )
 
     elif dataType == 'Volume':
         K = gFN.shape[3]
-        file_output = [os.path.join(dir_pnet_gFN, str(int(i + 1)) + '.jpg') for i in range(K)]
-        if not os.path.exists(os.path.join(dir_pnet_gFN, 'Figure_Setting')):
-            os.makedirs(os.path.join(dir_pnet_gFN, 'Figure_Setting'))
+        file_output = [os.path.join(dir_pnet_gFN, f'{i + 1}.jpg') for i in range(K)]
+        os.makedirs(os.path.join(dir_pnet_gFN, 'Figure_Setting'), exist_ok=True)
         for i in range(K):
-            figure_title = 'FN ' + str(int(i + 1))
             file_setting = os.path.join(dir_pnet_gFN, 'Figure_Setting', f'FN_{i + 1}.json')
-            brain_map = gFN[:, :, :, i]
-            plot_FN_brain_volume_3view(brain_map, brain_template, color_function=None, threshold=threshold,
-                                       file_output=file_output[i], figure_title=figure_title, file_setting=file_setting,
-                                       colorbar_range_style=colorbar_range_style,
-                                       colorbar_scale=colorbar_scale,
-                                       colorbar_range_round=colorbar_range_round,
-                                       colorbar_label=colorbar_label)
+            plot_FN_brain_volume_3view(
+                gFN[:, :, :, i], brain_template, color_function=None, threshold=threshold,
+                file_output=file_output[i], figure_title=f'FN {i + 1}', file_setting=file_setting,
+                colorbar_range_style=colorbar_range_style, colorbar_scale=colorbar_scale,
+                colorbar_range_round=colorbar_range_round, colorbar_label=colorbar_label
+            )
 
     elif dataType == 'Surface-Volume' and dataFormat == 'HCP Surface-Volume (*.cifti)':
         K = gFN.shape[1]
-        file_output = [os.path.join(dir_pnet_gFN, str(int(i + 1)) + '.jpg') for i in range(K)]
-        if not os.path.exists(os.path.join(dir_pnet_gFN, 'Figure_Setting')):
-            os.makedirs(os.path.join(dir_pnet_gFN, 'Figure_Setting'))
+        file_output = [os.path.join(dir_pnet_gFN, f'{i + 1}.jpg') for i in range(K)]
+        os.makedirs(os.path.join(dir_pnet_gFN, 'Figure_Setting'), exist_ok=True)
         for i in range(K):
-            figure_title = 'FN ' + str(int(i + 1))
-            brain_map = gFN[:, i]
             file_setting = os.path.join(dir_pnet_gFN, 'Figure_Setting', f'FN_{i + 1}.json')
-            plot_FN_brain_surface_volume_7view(brain_map, brain_template, color_function=None, threshold=threshold,
-                                               file_output=file_output[i], figure_title=figure_title,
-                                               file_setting=file_setting,
-                                               colorbar_range_style=colorbar_range_style,
-                                               colorbar_scale=colorbar_scale,
-                                               colorbar_range_round=colorbar_range_round,
-                                               colorbar_label=colorbar_label)
+            plot_FN_brain_surface_volume_7view(
+                gFN[:, i], brain_template, color_function=None, threshold=threshold,
+                file_output=file_output[i], figure_title=f'FN {i + 1}', file_setting=file_setting,
+                colorbar_range_style=colorbar_range_style, colorbar_scale=colorbar_scale,
+                colorbar_range_round=colorbar_range_round, colorbar_label=colorbar_label
+            )
+
+    else:
+        raise ValueError(f"Unsupported data type or format: {dataType}, {dataFormat}")
 
     # output an assembled image
     file_output_assembled = os.path.join(dir_pnet_gFN, 'All.jpg')
     assemble_image(file_output, file_output_assembled, interval=(50, 5), background=(0, 0, 0))
 
     # output a compressed image
-    compress_image(os.path.join(dir_pnet_gFN, 'All(Compressed).jpg'),
-                   os.path.join(dir_pnet_gFN, 'All.jpg'),
-                   image_size=(2000, 10000))
+    compressed_path = os.path.join(dir_pnet_gFN, 'All(Compressed).jpg')
+    compress_image(compressed_path, file_output_assembled, image_size=(2000, 10000))
 
-    return
+    # return result metadata
+    return {
+        "FN_method": FN_Method,
+        "data_type": dataType,
+        "data_format": dataFormat,
+        "n_FN": K,
+        "individual_FN_images": file_output,
+        "assembled_image": file_output_assembled,
+        "compressed_image": compressed_path
+    }
 
 
 def run_pFN_Visualization(dir_pnet_result: str):
@@ -1331,82 +1331,70 @@ def run_pFN_Visualization(dir_pnet_result: str):
     Run preconfigured visualizations for pFNs
 
     :param dir_pnet_result: directory of the pnet result folder
-    :return:
+    :return: dict of visualization metadata for each subject
 
-    Yuncong Ma, 2/8/2024
     """
+
+    import os
+    import numpy as np
 
     # get directories of sub-folders
     dir_pnet_dataInput, dir_pnet_FNC, dir_pnet_gFN, dir_pnet_pFN, _, _ = setup_result_folder(dir_pnet_result)
 
-    # load settings for data input and FN computation
-    if not os.path.isfile(os.path.join(dir_pnet_dataInput, 'Setting.json')) or not os.path.isfile(
-            os.path.join(dir_pnet_FNC, 'Setting.json')):
-        raise ValueError('Cannot find the setting json file in folder Data_Input or FN_Computation')
+    # load settings
     settingDataInput = load_json_setting(os.path.join(dir_pnet_dataInput, 'Setting.json'))
     settingFNC = load_json_setting(os.path.join(dir_pnet_FNC, 'Setting.json'))
-    # load figure settings
     settingVisualization = load_json_setting(os.path.join(dir_pnet_pFN, 'Setting.json'))
 
     setting = {'Data_Input': settingDataInput, 'FN_Computation': settingFNC, 'Visualization': settingVisualization}
 
-    # load basic settings
     dataType = setting['Data_Input']['Data_Type']
     dataFormat = setting['Data_Input']['Data_Format']
-
     FN_Method = setting['FN_Computation']['Method']
 
-    # colorbar setting for visualization
     colorbar_range_style, colorbar_scale, colorbar_range_round, colorbar_label, threshold = setup_colorbar_style(
         FN_Method)
-
     brain_template = load_brain_template(os.path.join(dir_pnet_dataInput, 'Brain_Template.json.zip'))
 
     # setup folders in Personalized_FN
     list_subject_folder = setup_pFN_folder(dir_pnet_result)
-    N_Scan = len(list_subject_folder)
-    for scan in range(1, N_Scan + 1):
-        # print(f'Start to visualize pFNs for {i}-th folder: {list_subject_folder[i-1]}', file=logFile_FNC, flush=True)
-        dir_pnet_pFN_indv = os.path.join(dir_pnet_pFN, list_subject_folder[scan - 1])
+    result_summary = {}
+
+    for scan in range(1, len(list_subject_folder) + 1):
+        subject_id = list_subject_folder[scan - 1]
+        dir_pnet_pFN_indv = os.path.join(dir_pnet_pFN, subject_id)
         pFN = load_matlab_single_array(os.path.join(dir_pnet_pFN_indv, 'FN.mat'))
+
+        file_output = []
 
         if dataType == 'Surface' and dataFormat == 'HCP Surface (*.cifti, *.mat)':
             K = pFN.shape[1]
-            file_output = [os.path.join(dir_pnet_pFN_indv, str(int(i + 1)) + '.jpg') for i in range(K)]
+            file_output = [os.path.join(dir_pnet_pFN_indv, f'{i + 1}.jpg') for i in range(K)]
             for i in range(K):
-                figure_title = 'FN ' + str(int(i + 1))
-                brain_map = pFN[:, i]
-                plot_FN_brain_surface_5view(brain_map, brain_template, color_function=None, threshold=threshold,
-                                            file_output=file_output[i], figure_title=figure_title,
-                                            colorbar_range_style=colorbar_range_style,
-                                            colorbar_scale=colorbar_scale,
-                                            colorbar_range_round=colorbar_range_round,
-                                            colorbar_label=colorbar_label
-                                            )
+                plot_FN_brain_surface_5view(
+                    pFN[:, i], brain_template, color_function=None, threshold=threshold,
+                    file_output=file_output[i], figure_title=f'FN {i + 1}',
+                    colorbar_range_style=colorbar_range_style, colorbar_scale=colorbar_scale,
+                    colorbar_range_round=colorbar_range_round, colorbar_label=colorbar_label
+                )
 
         elif dataType == 'Surface' and dataFormat in ('MGH Surface (*.mgh)', 'MGZ Surface (*.mgz)'):
             K = pFN.shape[1]
-            file_output = [os.path.join(dir_pnet_pFN_indv, str(int(i + 1)) + '.jpg') for i in range(K)]
+            file_output = [os.path.join(dir_pnet_pFN_indv, f'{i + 1}.jpg') for i in range(K)]
             for i in range(K):
-                figure_title = 'FN ' + str(int(i + 1))
-                brain_map = pFN[:, i]
-                plot_FN_brain_surface_5view(brain_map, brain_template, color_function=None, threshold=threshold,
-                                            hemisphere_offset=100,
-                                            file_output=file_output[i], figure_title=figure_title,
-                                            colorbar_range_style=colorbar_range_style,
-                                            colorbar_scale=colorbar_scale,
-                                            colorbar_range_round=colorbar_range_round,
-                                            colorbar_label=colorbar_label
-                                            )
+                plot_FN_brain_surface_5view(
+                    pFN[:, i], brain_template, color_function=None, threshold=threshold,
+                    hemisphere_offset=100,
+                    file_output=file_output[i], figure_title=f'FN {i + 1}',
+                    colorbar_range_style=colorbar_range_style, colorbar_scale=colorbar_scale,
+                    colorbar_range_round=colorbar_range_round, colorbar_label=colorbar_label
+                )
 
         elif dataType == 'Volume':
             K = pFN.shape[3]
-            file_output = [os.path.join(dir_pnet_pFN_indv, str(int(i + 1)) + '.jpg') for i in range(K)]
+            file_output = [os.path.join(dir_pnet_pFN_indv, f'{i + 1}.jpg') for i in range(K)]
             for i in range(K):
-                figure_title = 'FN ' + str(int(i + 1))
-                brain_map = pFN[:, :, :, i]
                 file_setting = os.path.join(dir_pnet_gFN, 'Figure_Setting', f'FN_{i + 1}.json')
-
                 view_center = 'max_value'
                 color_function = None
                 if os.path.exists(file_setting):
@@ -1416,23 +1404,20 @@ def run_pFN_Visualization(dir_pnet_result: str):
                     if setting['Visualization']['Synchronized_Colorbar']:
                         color_function = np.array(dict_setting['Color_Function'])
 
-                plot_FN_brain_volume_3view(brain_map, brain_template,
-                                           color_function=color_function, threshold=threshold,
-                                           view_center=view_center,
-                                           figure_title=figure_title, file_output=file_output[i],
-                                           colorbar_range_style=colorbar_range_style,
-                                           colorbar_scale=colorbar_scale,
-                                           colorbar_range_round=colorbar_range_round,
-                                           colorbar_label=colorbar_label)
+                plot_FN_brain_volume_3view(
+                    pFN[:, :, :, i], brain_template,
+                    color_function=color_function, threshold=threshold,
+                    view_center=view_center,
+                    file_output=file_output[i], figure_title=f'FN {i + 1}',
+                    colorbar_range_style=colorbar_range_style, colorbar_scale=colorbar_scale,
+                    colorbar_range_round=colorbar_range_round, colorbar_label=colorbar_label
+                )
 
         elif dataType == 'Surface-Volume' and dataFormat == 'HCP Surface-Volume (*.cifti)':
             K = pFN.shape[1]
-            file_output = [os.path.join(dir_pnet_pFN_indv, str(int(i + 1)) + '.jpg') for i in range(K)]
+            file_output = [os.path.join(dir_pnet_pFN_indv, f'{i + 1}.jpg') for i in range(K)]
             for i in range(K):
-                figure_title = 'FN ' + str(int(i + 1))
-                brain_map = pFN[:, i]  # pFN[:, :, :, i]  #updated on 07/30/20204
                 file_setting = os.path.join(dir_pnet_gFN, 'Figure_Setting', f'FN_{i + 1}.json')
-
                 view_center = 'max_value'
                 color_function = None
                 if os.path.exists(file_setting):
@@ -1442,25 +1427,31 @@ def run_pFN_Visualization(dir_pnet_result: str):
                     if setting['Visualization']['Synchronized_Colorbar']:
                         color_function = np.array(dict_setting['Color_Function'])
 
-                plot_FN_brain_surface_volume_7view(brain_map, brain_template,
-                                                   color_function=color_function, threshold=threshold,
-                                                   view_center=view_center,
-                                                   file_output=file_output[i], figure_title=figure_title,
-                                                   colorbar_range_style=colorbar_range_style,
-                                                   colorbar_scale=colorbar_scale,
-                                                   colorbar_range_round=colorbar_range_round,
-                                                   colorbar_label=colorbar_label)
+                plot_FN_brain_surface_volume_7view(
+                    pFN[:, i], brain_template,
+                    color_function=color_function, threshold=threshold,
+                    view_center=view_center,
+                    file_output=file_output[i], figure_title=f'FN {i + 1}',
+                    colorbar_range_style=colorbar_range_style, colorbar_scale=colorbar_scale,
+                    colorbar_range_round=colorbar_range_round, colorbar_label=colorbar_label
+                )
 
-        # output an assembled image
+        # output assembled + compressed image
         file_output_assembled = os.path.join(dir_pnet_pFN_indv, 'All.jpg')
+        compress_output = os.path.join(dir_pnet_pFN_indv, 'All(Compressed).jpg')
+
         assemble_image(file_output, file_output_assembled, interval=(50, 5), background=(0, 0, 0))
+        compress_image(compress_output, file_output_assembled, image_size=(2000, 10000))
 
-        # output a compressed image
-        compress_image(os.path.join(dir_pnet_pFN_indv, 'All(Compressed).jpg'),
-                       os.path.join(dir_pnet_pFN_indv, 'All.jpg'),
-                       image_size=(2000, 10000))
+        # 记录结果
+        result_summary[subject_id] = {
+            "n_FN": K,
+            "individual_FN_images": file_output,
+            "assembled_image": file_output_assembled,
+            "compressed_image": compress_output
+        }
 
-    return
+    return result_summary
 
 
 def run_Visualization(dir_pnet_result: str):
