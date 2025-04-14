@@ -118,7 +118,7 @@ class NewParser(argparse.ArgumentParser):
 if __name__ == "__main__":
     # Create the parser
     parser = NewParser(
-        description="pNet: a toolbox for computing personalized functional networks from preprocessed functional magnetic resonance imaging (fMRI) data")
+        description="pNet: a toolbox for computing personalized functional networks from preprocessed functional magnetic resonance imaging (fMRI) test")
     # Add arguments
     parser.add_argument("-c", "--config", type=str, help="A configuration file is required for setting parameters",
                         required=True)
