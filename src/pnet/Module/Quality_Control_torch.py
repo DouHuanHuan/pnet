@@ -6,7 +6,6 @@
 
 # to disable warnings
 import logging
-
 logging.getLogger('matplotlib.font_manager').setLevel(level=logging.CRITICAL)
 # added by Yong Fan on July 23, 2024
 
@@ -396,7 +395,7 @@ def compute_quality_control_torch_cluster(dir_pnet_result: str, jobID=1):
     scan_data = torch.tensor(scan_data, dtype=torch_float)
 
     # Compute quality control measurement
-    Spatial_Correspondence, Delta_Spatial_Correspondence, Miss_Match, Functional_Coherence, Functional_Coherence_Control = \
+    Spatial_Correspondence, Delta_Spatial_Correspondence, Miss_Match, Functional_Coherence, Functional_Coherence_Control =\
         compute_quality_control_torch(scan_data, gFN, pFN, dataPrecision=dataPrecision, logFile=None)
 
     # Finalize results

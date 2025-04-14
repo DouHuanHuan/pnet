@@ -3,14 +3,13 @@
 # Provide functions to submit jobs to cluster environment
 
 
-import os
 #########################################
 # Packages
 from datetime import datetime
+import os
 from sys import platform
 
 from Module.Data_Input import write_json_setting, load_json_setting, setup_result_folder
-
 
 #########################################
 
@@ -24,6 +23,7 @@ def setup_cluster(dir_pnet_result: str,
                   memory_command='-l h_vmem=',
                   log_command='-o ',
                   computation_resource=None or dict):
+
     """
     Setup cluster environment and commands to submit jobs
 

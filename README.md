@@ -27,17 +27,13 @@ For visualization issues that might be caused by VTK, please
 check [TrobubleShooting](https://github.com/MLDataAnalytics/pNet?tab=readme-ov-file#troubleshooting).
 
 ### Run with a docker image
-
 ```
 docker pull mldataanalytics/fmripnet:latest
 ```
-
 or
-
 ```
 docker pull ghcr.io/mldataanalytics/fmripnet:latest
 ```
-
 ```
 docker run mldataanalytics/fmripnet -h
 ```
@@ -51,7 +47,6 @@ singularity pull --arch amd64 library://yongfan/collection/fmripnet:latest
 ```
 singularity run fmripnet_latest.sif -h
 ```
-
 ### Download and install pNet
 
 #### 1. Download pNet
@@ -61,22 +56,18 @@ git clone https://github.com/MLDataAnalytics/pNet.git
 ```
 
 #### 2. Create a new conda environment for pNet
-
 ``` 
 cd pNet
 conda env create --name fmripnet -f environment_pnet.yml
 ```
 
 #### 3. Install pNet
-
 ```
 conda activate fmripnet
 pip install .
 # or pip install fmripnet
 ```
-
 ### Script usages
-
 #### 1. Prepare data
 
 * A number of preprocessed fMRI scans that have been spatially aligned to a template space (Individual fMRI scans from
@@ -102,7 +93,6 @@ pip install .
 #### 2. Example files of scans and configuration
 
 * An example file with a list of preprocessed fMRI scans:
-
 ```
 /cbica/projects/xxx/rfMRI_REST1_LR/rfMRI_REST1_LR_Atlas_MSMAll_hp2000_clean.dtseries.nii
 ...
@@ -111,7 +101,6 @@ eries.nii
 ```
 
 * An example configration file:
-
 ```
 # This is a configuration file for computing personalized functional networks (FNs) given a set of preprocessed fMRI data
 ## input:
@@ -198,7 +187,6 @@ thread_visualization= 1
 
 * a script (fmripnet.py) can be found in cli folder for running the computation, supplied with a configuration file (*
   .toml) for setting the input and output information
-
 ```
    run "python fmripnet.py -h " to get help information
    run "python fmripnet.py -c a_config.toml" to start the computation without HPC
@@ -208,7 +196,6 @@ thread_visualization= 1
 ### Code examples and usages
 
 #### 1. Prepare data
-
 ```
 1) a number of preprocessed fMRI scans that have been spatially aligned to a template space,
 2) a mask image for excluding voxels/vertices of uninterest,
@@ -216,15 +203,12 @@ thread_visualization= 1
 ```
 
 #### 2. Setup the computation
-
 ```
 1) the number of functional networks,
 2) the output folder information,
 3) optional parameters
 ```
-
 #### 3. Example code:
-
 ```
 import pnet
 
@@ -266,7 +250,6 @@ pnet.workflow_simple(
 ```
 
 ## Brain templates and precomputed group FNs
-
 ### Brain Template
 
 A brain template provides a brain mask and an overlay structural image for volume data (both in the same space of the
@@ -274,7 +257,6 @@ preprocessed fMRI data), and 3D coordinates for brain surface data.
 
 **Five built-in brain templates are located
 in [Brain_Template](https://github.com/MLDataAnalytics/pNet/tree/main/src/pnet/Brain_Template) subfolders:**
-
 ```
 HCP Surface: Located in the "HCP_Surface" subfolder, this template contains 3D mesh shapes (vertices and faces) and brain masks for both hemispheres.
 FreeSurfer fsaverage5: Located in the "FreeSurfer_fsaverage5" subfolder, this template is similar in structure to the HCP Surface template.
@@ -306,6 +288,7 @@ networks (gFNs) and personalized functional networks (pFNs), including figures i
 and comparing their functional coherence.
 
 ![299868334-22f08f1f-a085-4df8-907b-1f7ae0e23c13](https://github.com/user-attachments/assets/36adc816-aefb-470f-9923-5d82b0433007)
+
 
 ### Report
 
@@ -365,8 +348,8 @@ metrics.
   ***medRxiv*** [Preprint]. 2024 Sep 27:2024.09.20.24314007. doi: 10.1101/2024.09.20.24314007. PMID: 39399003; PMCID:
   PMC11469391.
 
-## Troubleshooting
 
+## Troubleshooting
 ### vtk-osmesa (off-screen MESA):
 
 If vtk-osmesa (off-screen MESA) cannot be installed with conda (conda install -c conda-forge "vtk>=9.2=*osmesa*"),
@@ -382,11 +365,9 @@ If you encounter problems or bugs with pNet, or have questions or improvement su
 touch via the [Github issues](https://github.com/MLDataAnalytics/pNet/issues).
 
 ## Acknowledgment
-
 This project has been supported in part by NIH grants U24NS130411 and R01EB022573.
 
 ## Previous versions:
-
 **Matlab and Python:** https://github.com/MLDataAnalytics/pNet_Matlab
 
 **Matlab:** https://github.com/MLDataAnalytics/Collaborative_Brain_Decomposition

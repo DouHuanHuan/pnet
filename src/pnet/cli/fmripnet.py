@@ -1,12 +1,9 @@
 # load pnet toolbox
-import argparse
+import pnet
 import sys
+import argparse
 
 import tomli
-
-import pnet
-
-
 def read_config(file_path):
     try:
         with open(file_path, "rb") as f:
@@ -18,7 +15,6 @@ def read_config(file_path):
         return config  # necessary_settings, pFN_settings, gFN_settings, hpc_settings
     except tomli.TOMLDecodeError:
         print(f"errors in {file_path}.")
-
 
 def main(config_file='config.txt', HPC=None):
     # get configuration information
@@ -36,11 +32,11 @@ def main(config_file='config.txt', HPC=None):
         file_gFN = None
     else:
         file_gFN = config['pFN_settings']['file_gFN']
-    # gFN_setting
+    #gFN_setting
     sampleSize = config['gFN_settings']['sampleSize']
     nBS = config['gFN_settings']['nBS']
     nTPoints = config['gFN_settings']['nTPoints']
-    # hpc_settings
+    #hpc_settings
     pnet_env = config['hpc_settings']['pnet_env']
     hpc_submit = config['hpc_settings']['submit']
     hpc_computation_resource = config['hpc_settings']['computation_resource']
@@ -103,17 +99,14 @@ def main(config_file='config.txt', HPC=None):
             log_command=hpc_submit['log_command'],
             computation_resource=hpc_computation_resource
         )
-    # else:
+    #else:
     #   print(f"Error: {HPC} is not supported yet!")
-
 
 class NewParser(argparse.ArgumentParser):
     def error(self, message):
         sys.stderr.write('error: %s\n' % message)
         self.print_help()
         sys.exit(1)
-
-
 if __name__ == "__main__":
     # Create the parser
     parser = NewParser(

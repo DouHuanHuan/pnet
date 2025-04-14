@@ -1,11 +1,10 @@
 # Yuncong Ma, 2/2/2024
 # basic matrix computation functions
 
-import numpy as np
 #########################################
 # Packages
 import torch
-
+import numpy as np
 # disable grad computation on 08/03/2024
 torch.set_grad_enabled(False)
 # other functions of pNet

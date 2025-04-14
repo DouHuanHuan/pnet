@@ -2,9 +2,9 @@
 # A script to generate built-in brain template files
 # Some data are missing due to data license, but can be downloaded online
 
+import pnet
 import os
 
-import pnet
 
 # =============== HCP Surface =============== #
 # Use shape file
@@ -26,6 +26,7 @@ if __name__ == '__main__':
                               maskValue=0,  # HCP uses 1 to label medial wall
                               file_surfL_inflated=file_surfL_inflated, file_surfR_inflated=file_surfR_inflated
                               )
+
 
 # =============== HCP Surface-Volume =============== #
 # Use a real HCP fMRI data to generate the volume parts

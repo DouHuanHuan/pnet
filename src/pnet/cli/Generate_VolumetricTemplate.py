@@ -1,8 +1,7 @@
-import argparse
 import os
-
 import numpy as np
-
+import nibabel as nib
+import argparse
 from pnet.Module.Data_Input import load_fmri_scan, save_brain_template
 
 if __name__ == "__main__":

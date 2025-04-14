@@ -1,9 +1,6 @@
 # Yuncong Ma, 2/14/2024
 # Quality control module of pNet
 
-# to disable warningings
-import logging
-
 #########################################
 # Packages
 import pandas as pd
@@ -23,6 +20,8 @@ from plotnine import (
     element_line
 )
 
+# to disable warningings
+import logging
 logging.getLogger('matplotlib.font_manager').setLevel(level=logging.CRITICAL)
 # added by Yong Fan on July 23, 2024
 
@@ -133,7 +132,7 @@ def run_quality_control(dir_pnet_result: str):
         elif Data_Type == 'Volume':
             scan_data, _, _ = load_fmri_scan(file_scan_list, dataType=Data_Type, dataFormat=Data_Format, Reshape=True,
                                              Brain_Mask=Brain_Mask, Normalization=None)
-            # scan_data = scan_data.astype(np_float)
+            #scan_data = scan_data.astype(np_float)
 
 
         elif Data_Type == 'Surface-Volume':
@@ -144,7 +143,7 @@ def run_quality_control(dir_pnet_result: str):
             raise ValueError('Unknown data type: ' + Data_Type)
 
         # Compute quality control measurement
-        Spatial_Correspondence, Delta_Spatial_Correspondence, Miss_Match, Functional_Coherence, Functional_Coherence_Control = \
+        Spatial_Correspondence, Delta_Spatial_Correspondence, Miss_Match, Functional_Coherence, Functional_Coherence_Control =\
             compute_quality_control(scan_data, gFN, pFN, dataPrecision=dataPrecision, logFile=None)
 
         # Finalize results
@@ -177,7 +176,7 @@ def run_quality_control(dir_pnet_result: str):
               f' This means those scans have at least one pFN show higher spatial similarity to a different group-level FN\n',
               file=file_Final_Report, flush=True)
 
-    # file_Final_Report.close()
+    #file_Final_Report.close()
 
     # Generate visualization
     visualize_quality_control(dir_pnet_result)
@@ -227,7 +226,7 @@ def compute_quality_control(scan_data: np.ndarray, gFN: np.ndarray, pFN: np.ndar
     Delta_Spatial_Correspondence = QC_Delta_Sim
 
     # Spatial_Correspondence = mat_corr(gFN, pFN, dataPrecision=dataPrecision)
-    # Delta_Spatial_Correspondence = np.diag(Spatial_Correspondence) - np.max(
+    #Delta_Spatial_Correspondence = np.diag(Spatial_Correspondence) - np.max(
     #    Spatial_Correspondence - np.diag(2 * np.ones(K)), axis=0)
 
     # Miss match between gFNs and pFNs
@@ -237,10 +236,10 @@ def compute_quality_control(scan_data: np.ndarray, gFN: np.ndarray, pFN: np.ndar
     else:
         ps = np.where(Delta_Spatial_Correspondence < 0)[0]
         # ps2 = np.argmax(Spatial_Correspondence, axis=0)
-        ps2 = np.asarray(np.argmax(s_c, axis=0))  # .reshape(1, -1)[:, 0]
+        ps2 = np.asarray(np.argmax(s_c, axis=0))  #.reshape(1, -1)[:, 0]
         Miss_Match = np.concatenate((ps[:, np.newaxis] + 1, ps2[ps[:], np.newaxis] + 1), axis=1)
 
-        # np.concatenate((ps[:, np.newaxis] + 1, ps2[:, np.newaxis] + 1), axis=1)
+        #np.concatenate((ps[:, np.newaxis] + 1, ps2[:, np.newaxis] + 1), axis=1)
 
     # Functional coherence
     pFN_signal = scan_data @ pFN / np.sum(np.abs(pFN), axis=0, keepdims=True)

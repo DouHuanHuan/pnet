@@ -6,23 +6,20 @@
 # 3. loading and setting up of brain template files
 
 
-import gzip
-import json
-import os
-import time
-
-import h5py
 #########################################
 # Packages
 import nibabel as nib
 import numpy as np
 import scipy
 import scipy.io as sio
+import os
+import json
 import torch
-
+import h5py
+import time
+import gzip
 # disable grad computation on 08/03/2024
 torch.set_grad_enabled(False)
-
 
 def load_matlab_array(file_matlab: str,
                       variable_name: str):
@@ -521,7 +518,7 @@ def load_fmri_scan(file_scan_list: str,
                         scan_data = normalize_data(scan_data, 'vp', 'vmax')
                     else:
                         raise ValueError('Unsupported data normalization: ' + Normalization)
-            # Data = scan_data
+            #Data = scan_data
             # Randomly select time points if the number time points to be used is samller than the number of available time points
             if nTPoints < scan_data.shape[0]:
                 tpoints = np.random.choice(scan_data.shape[0], nTPoints, replace=False)
@@ -553,7 +550,7 @@ def load_fmri_scan(file_scan_list: str,
                 raise ValueError('Unknown dataType: ' + dataType)
 
             if Concatenation:
-                # Data = np.append(Data, scan_data, axis=0)
+                #Data = np.append(Data, scan_data, axis=0)
                 # Randomly select time points if the number time points to be used is samller than the number of available time points
                 if nTPoints < scan_data.shape[0]:
                     tpoints = np.random.choice(scan_data.shape[0], nTPoints, replace=False)
@@ -620,18 +617,18 @@ def compute_brain_surface(file_surfL: str,
         # Surface shape
         # Index starts from 1
         Brain_Surface['Shape']['L']['vertices'], Brain_Surface['Shape']['L']['faces'] = shapeL.darrays[0].data, \
-            shapeL.darrays[1].data + int(1)
+        shapeL.darrays[1].data + int(1)
         Brain_Surface['Shape']['R']['vertices'], Brain_Surface['Shape']['R']['faces'] = shapeR.darrays[0].data, \
-            shapeR.darrays[1].data + int(1)
+        shapeR.darrays[1].data + int(1)
         # Truncating digits to save space
         Brain_Surface['Shape']['L']['vertices'] = np.round(Brain_Surface['Shape']['L']['vertices'], n_digit)
         Brain_Surface['Shape']['R']['vertices'] = np.round(Brain_Surface['Shape']['R']['vertices'], n_digit)
         # Surface shape inflated
         if file_surfL_inflated is not None and file_surfR_inflated is not None:
             Brain_Surface['Shape_Inflated']['L']['vertices'], Brain_Surface['Shape_Inflated']['L']['faces'] = \
-                shapeL_inflated.darrays[0].data, shapeL_inflated.darrays[1].data + int(1)
+            shapeL_inflated.darrays[0].data, shapeL_inflated.darrays[1].data + int(1)
             Brain_Surface['Shape_Inflated']['R']['vertices'], Brain_Surface['Shape_Inflated']['R']['faces'] = \
-                shapeR_inflated.darrays[0].data, shapeR_inflated.darrays[1].data + int(1)
+            shapeR_inflated.darrays[0].data, shapeR_inflated.darrays[1].data + int(1)
             # Truncating digits to save space
             Brain_Surface['Shape_Inflated']['L']['vertices'] = np.round(
                 Brain_Surface['Shape_Inflated']['L']['vertices'], n_digit)
@@ -685,8 +682,7 @@ def compute_brain_surface(file_surfL: str,
         if maskValue == 1:  # Use indexes in the mask files as useful vertices
             Brain_Surface['Brain_Mask']['L'] = np.zeros(Brain_Surface['Shape']['L']['vertices'].shape[0],
                                                         dtype=np.int32)
-            Brain_Surface['Brain_Mask']['R'] = np.zeros(Brain_Surface['Shape']['R']['vertices'].shape[0],
-                                                        dtype=np.int32)
+            Brain_Surface['Brain_Mask']['R'] = np.zeros(Brain_Surface['Shape']['R']['vertices'].shape[0], dtype=np.int32)
             Brain_Surface['Brain_Mask']['L'][indexL] = 1
             Brain_Surface['Brain_Mask']['R'][indexR] = 1
         else:  # Use indexes in the mask files as unused vertices
@@ -795,8 +791,7 @@ def compute_brain_template(dataType: str,
 
     elif dataType == 'Surface':
         if file_surfL is None or file_surfR is None or file_maskL is None or file_maskR is None:
-            raise ValueError(
-                'When data type is surface, file_surfL, file_surfR, file_maskL and file_maskR are required')
+            raise ValueError('When data type is surface, file_surfL, file_surfR, file_maskL and file_maskR are required')
         Brain_Template = \
             compute_brain_surface(file_surfL, file_surfR, file_maskL, file_maskR,
                                   file_surfL_inflated=file_surfL_inflated, file_surfR_inflated=file_surfR_inflated,
@@ -1222,7 +1217,7 @@ def reshape_fmri_data(scan_data: np.ndarray,
             reshaped_data = np.zeros((scan_data.shape[0], len(ps)), like=scan_data)
             reshaped_data[:, ps] = scan_data
             reshaped_data = np.reshape(reshaped_data.T, (
-                Brain_Mask.shape[0], Brain_Mask.shape[1], Brain_Mask.shape[2], scan_data.shape[0]),
+            Brain_Mask.shape[0], Brain_Mask.shape[1], Brain_Mask.shape[2], scan_data.shape[0]),
                                        order='F')  # Match colum based index used in MATLAB
 
         else:
@@ -1367,9 +1362,8 @@ def check_data_type_format(dataType: str,
                       logFile=logFile, stop=True)
 
     if dataFormat not in (
-            'HCP Surface (*.cifti, *.mat)', 'MGH Surface (*.mgh)', 'MGZ Surface (*.mgz)',
-            'Volume (*.nii, *.nii.gz, *.mat)',
-            'HCP Surface-Volume (*.cifti)', 'HCP Volume (*.cifti)', 'FreeSurfer'):
+    'HCP Surface (*.cifti, *.mat)', 'MGH Surface (*.mgh)', 'MGZ Surface (*.mgz)', 'Volume (*.nii, *.nii.gz, *.mat)',
+    'HCP Surface-Volume (*.cifti)', 'HCP Volume (*.cifti)', 'FreeSurfer'):
         if logFile is None:
             print_log(
                 "Data format should be 'HCP Surface (*.cifti, *.mat)', 'MGH Surface (*.mgh)', 'MGZ Surface (*.mgz)', 'Volume (*.nii, *.nii.gz, *.mat)', or 'HCP Surface-Volume (*.cifti)'",
@@ -1377,7 +1371,7 @@ def check_data_type_format(dataType: str,
 
     # Check whether dataType and dataFormat are matched
     if dataType == 'Surface' and dataFormat not in (
-            'HCP Surface (*.cifti, *.mat)', 'MGH Surface (*.mgh)', 'MGZ Surface (*.mgz)', 'FreeSurfer'):
+    'HCP Surface (*.cifti, *.mat)', 'MGH Surface (*.mgh)', 'MGZ Surface (*.mgz)', 'FreeSurfer'):
         print_log(
             "When dataType is surface, dataFormat should be one of 'HCP Surface (*.cifti, *.mat)', 'MGH Surface (*.mgh)', 'MGZ Surface (*.mgz)', 'FreeSurfer'",
             logFile=logFile, stop=True)
@@ -1658,7 +1652,7 @@ def output_FN(FN: np.ndarray or str or tuple,
     # save a loaded FN into a file
     def save_FN(FN_2: np.ndarray, file_output_2: str):  # to be updated to include correct header information
         if dataFormat == 'Volume (*.nii, *.nii.gz, *.mat)':
-            # if 'Voxel_Size' in Brain_Template.keys():
+            #if 'Voxel_Size' in Brain_Template.keys():
             #    dimension = Brain_Template['Voxel_Size']
             #    dimension[3] = 1
             #    nib.save(nib.Nifti1Image(FN_2, np.diag(dimension)), file_output_2)
@@ -1669,11 +1663,11 @@ def output_FN(FN: np.ndarray or str or tuple,
 
         elif dataFormat == 'HCP Surface (*.cifti, *.mat)':
             # Create header info
-            # AX_S = nib.cifti2.BrainModelAxis.from_surface(np.arange(29696), 29696, name='CortexLeft') + \
+            #AX_S = nib.cifti2.BrainModelAxis.from_surface(np.arange(29696), 29696, name='CortexLeft') + \
             #       nib.cifti2.BrainModelAxis.from_surface(np.arange(29716), 29716, name='CortexRight')
-            # AX_T = nib.cifti2.SeriesAxis(start=1, step=1, size=FN_2.shape[1])
+            #AX_T = nib.cifti2.SeriesAxis(start=1, step=1, size=FN_2.shape[1])
             if Cheader is not None:
-                series = nib.cifti2.cifti2_axes.SeriesAxis(0, 1, FN_2.shape[1])
+                series = nib.cifti2.cifti2_axes.SeriesAxis(0, 1, FN_2.shape[1]) 
                 bm = Cheader.get_axis(1)
                 # expand FN_2 with zeros
                 FN = np.zeros((91282, FN_2.shape[1]), dtype=FN_2.dtype)
@@ -1688,7 +1682,7 @@ def output_FN(FN: np.ndarray or str or tuple,
 
         elif dataFormat == 'HCP Surface-Volume (*.cifti)':
             if Cheader is not None:
-                series = nib.cifti2.cifti2_axes.SeriesAxis(0, 1, FN_2.shape[1])  # 17, unit='SECOND'
+                series = nib.cifti2.cifti2_axes.SeriesAxis(0, 1, FN_2.shape[1])  #17, unit='SECOND'
                 bm = Cheader.get_axis(1)
                 if Nheader is not None:
                     nib.save(nib.cifti2.Cifti2Image(FN_2.T, header=(series, bm), nifti_header=Nheader), file_output_2)
@@ -1721,8 +1715,7 @@ def output_FN(FN: np.ndarray or str or tuple,
 
     if isinstance(FN, np.ndarray):
         file_output = prepare_extension(file_output)
-        save_FN(FN, file_output)  # , logFile) #modified by FY on 07/26/2024
-
+        save_FN(FN, file_output)  #, logFile) #modified by FY on 07/26/2024
 
 '''
     elif isinstance(FN, str):

@@ -1,9 +1,9 @@
 # Yuncong Ma, 2/14/2024
 # Make a web page based report for fast visual examination
 
+from Module.Visualization import *
 import shutil
 
-from Module.Visualization import *
 
 dir_python = os.path.dirname(os.path.abspath(__file__))
 

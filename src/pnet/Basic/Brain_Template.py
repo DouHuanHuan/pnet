@@ -38,12 +38,11 @@ file_FS_surf = os.path.join(dir_Template, 'FreeSurfer_fsaverage5', 'Brain_Templa
 
 # MNI volume
 file_MNI_vol = os.path.join(dir_Template, 'MNI_Volume', 'Brain_Template.json.zip')
-
-
 # Organize example into a class variable
 
 
 class Brain_Template:
+
     # HCP surface
     file_HCP_surf = file_HCP_surf
 

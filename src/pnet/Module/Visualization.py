@@ -1465,10 +1465,10 @@ def run_Visualization(dir_pnet_result: str):
     """
 
     # Run gFN and pFN visualization
-    run_gFN_Visualization(dir_pnet_result)
-    run_pFN_Visualization(dir_pnet_result)
+    r1 = run_gFN_Visualization(dir_pnet_result)
+    r2 = run_pFN_Visualization(dir_pnet_result)
 
-    return
+    return r1 | r2
 
 
 def run_Visualization_cluster(dir_pnet_result: str):

@@ -1,15 +1,16 @@
 # Yuncong Ma, 1/10/2024
 # FN Computation module of pNet
 
-import os
-import time
-
 #########################################
 # Packages
 import numpy
 import numpy as np
 import scipy
 import scipy.io as sio
+import os
+import re
+import time
+
 # other functions of pNet
 from Module.Data_Input import *
 
@@ -406,7 +407,6 @@ def robust_normalize_V(V, factor=0.95, dataPrecision='double'):
     V = np.clip((V - np.tile(vbottome, (V.shape[0], 1))) / np.tile(vdiff, (V.shape[0], 1)), 0.0, 1.0)
     return V
 
-
 def pFN_NMF(Data, gFN, gNb, maxIter=1000, minIter=30, meanFitRatio=0.1, error=1e-4, normW=1,
             Alpha=2, Beta=30, alphaS=0, alphaL=0, vxI=0, initConv=1, ard=0, eta=0, dataPrecision='double',
             logFile='Log_pFN_NMF.log'):
@@ -492,7 +492,7 @@ def pFN_NMF(Data, gFN, gNb, maxIter=1000, minIter=30, meanFitRatio=0.1, error=1e
     V[trimInd] = 0
 
     # robust normalization of V  added on 08/03/2024
-    # V = robust_normalize_V(V, factor=1.0 / K)  # try to keep 1/K non-zero values for each component, updated on 08/03/2024
+    #V = robust_normalize_V(V, factor=1.0 / K)  # try to keep 1/K non-zero values for each component, updated on 08/03/2024
 
     # Initialize U
     U = X @ V / np.tile(np.sum(V, axis=0), (dim_time, 1))
@@ -697,7 +697,7 @@ def gFN_NMF(Data, K, gNb, init='random', maxIter=1000, minIter=200, error=1e-8, 
     # Construct the spatial affinity graph
     L, W, D = construct_Laplacian_gNb(gNb, dim_space, vxI, X, alphaL, normW, dataPrecision)
 
-    # add initialization parameter on 08/03/2024
+    #add initialization parameter on 08/03/2024
     # to use sklearn NMF
     # from sklearn.decomposition import NMF   # for sklearn based NMF initialization
     # model = NMF(n_components=K, init=init, max_iter=1, solver='mu')
@@ -710,7 +710,7 @@ def gFN_NMF(Data, K, gNb, init='random', maxIter=1000, minIter=200, error=1e-8, 
     if init != 'random':
         # to use sklearn NMF  on Aug 07, 2024
         from sklearn.decomposition import NMF
-        model = NMF(n_components=K, init=init, max_iter=20000)  # , random_state=0)
+        model = NMF(n_components=K, init=init, max_iter=20000)  #, random_state=0)
         W = model.fit_transform(X)
         H = model.components_
         return np.transpose(H)
@@ -723,7 +723,7 @@ def gFN_NMF(Data, K, gNb, init='random', maxIter=1000, minIter=200, error=1e-8, 
         # Initialize U and V
         mean_X = np.sum(X) / (dim_time * dim_space)
         U = (np.random.rand(dim_time, K) + 1) * (np.sqrt(mean_X / K))
-        V = (np.random.rand(dim_space, K) + 1) * (np.sqrt(mean_X / K))
+        V = (np.random.rand(dim_space, K) + 1) * (np.sqrt(mean_X /K))
 
         # Normalize data
         U, V = normalize_u_v(U, V, 1, 1, dataPrecision)
@@ -930,7 +930,7 @@ def gFN_fusion_NCut(gFN_BS, K, NCut_MaxTrial=100, dataPrecision='double', logFil
 
         for j in range(2,
                        k + 1):  # Find another K-1 rows in eigenvectors which have the minimum similarity to previous selected rows, similar to initialization in k++
-            c += np.abs(EigenVectors @ R[:, j - 2])
+            c += np.abs(EigenVectors @ R[:, j -2])
             ps = np.argmin(c)
             c_index[j - 1] = ps
             c[ps] = np.inf
@@ -948,7 +948,7 @@ def gFN_fusion_NCut(gFN_BS, K, NCut_MaxTrial=100, dataPrecision='double', logFil
             n, k = EigenVectorsR.shape
             J = np.argmax(EigenVectorsR, axis=1)  # Assign each sample to K centers of R based on highest similarity
             EigenvectorsDiscrete = scipy.sparse.csr_matrix((np.ones(n), (np.arange(n), J)), shape=(
-                n, k))  # Generate a 0-1 matrix with each row containing only one 1
+            n, k))  # Generate a 0-1 matrix with each row containing only one 1
 
             U, S, Vh = scipy.linalg.svd(EigenvectorsDiscrete.T @ EigenVectors,
                                         full_matrices=False)  # Economy-size decomposition
@@ -1223,7 +1223,7 @@ def bootstrap_scan(dir_output: str, file_scan: str, file_subject_ID: str, file_s
         raise ValueError('Group information is absent')
     if samplingMethod != 'Subject' and samplingMethod != 'Group_Subject' and samplingMethod != 'Scan':
         raise ValueError('Unknown sampling method for bootstrapping: ' + samplingMethod)
-    for i in range(1, nBS + 1):
+    for i in range(1, nBS +1):
         if not os.path.exists(os.path.join(dir_output, str(i))):
             os.mkdir(os.path.join(dir_output, str(i)))
         List_BS = np.empty(sampleSize, dtype=list)
@@ -1232,7 +1232,7 @@ def bootstrap_scan(dir_output: str, file_scan: str, file_subject_ID: str, file_s
         if samplingMethod == 'Subject':
             if sampleSize > N_Subject:  # changed on 08/01/2024
                 sampleSize = N_Subject
-                # raise ValueError('The number of randomly selected subjects should be no more than the total number of subjects')
+                #raise ValueError('The number of randomly selected subjects should be no more than the total number of subjects')
             ps = np.sort(np.random.choice(N_Subject, sampleSize, replace=False))
             for j in range(sampleSize):
                 if combineScan == 1:
@@ -1321,7 +1321,7 @@ def setup_SR_NMF(dir_pnet_result: str, K=17, Combine_Scan=False, file_gFN=None, 
             sampleSize = np.maximum(100, np.round(N_Subject / 10))
             if N_Subject < sampleSize:  # added by hm
                 sampleSize = N_Subject  # - 1  #changed by Yong Fan: for sample datasets, all subjects/scans are used
-                # nBS = 10   # was 5, changed by Yong Fan
+                #nBS = 10   # was 5, changed by Yong Fan
 
     # add nTPoints on 08/01/2024
     # add init on 08/03/2024
@@ -1482,7 +1482,7 @@ def run_FN_Computation(dir_pnet_result: str):
             samplingMethod = setting['FN_Computation']['Group_FN']['BootStrap']['samplingMethod']
             sampleSize = setting['FN_Computation']['Group_FN']['BootStrap']['sampleSize']
             nBS = setting['FN_Computation']['Group_FN']['BootStrap']['nBS']
-            nTPoints = setting['FN_Computation']['Group_FN']['BootStrap']['nTPoints']  # added on 08/01/2024
+            nTPoints = setting['FN_Computation']['Group_FN']['BootStrap']['nTPoints']  #added on 08/01/2024
 
             # create scan lists for bootstrap
             bootstrap_scan(dir_pnet_BS, file_scan, file_subject_ID, file_subject_folder,
@@ -1586,7 +1586,7 @@ def run_FN_Computation(dir_pnet_result: str):
                 gFN = reshape_FN(gFN, dataType=dataType, Brain_Mask=Brain_Mask)
             sio.savemat(os.path.join(dir_pnet_gFN, 'FN.mat'), {"FN": gFN}, do_compression=True)
             # save FNs in nii.gz and TC as txt file  FY 07/26/2024
-            # output_FN(FN=gFN,
+            #output_FN(FN=gFN,
             #          file_output=os.path.join(dir_pnet_gFN, 'FN.mat'),
             #          file_brain_template = Brain_Template,
             #          dataFormat=dataFormat, Cheader = CHeader, Nheader = NHeader)
@@ -1609,7 +1609,7 @@ def run_FN_Computation(dir_pnet_result: str):
         for i in range(1, N_Scan + 1):
             print(f'Start to compute pFNs for {i}-th folder: {list_subject_folder[i - 1]}', file=logFile_FNC,
                   flush=True)
-            dir_pnet_pFN_indv = os.path.join(dir_pnet_pFN, list_subject_folder[i - 1])
+            dir_pnet_pFN_indv = os.path.join(dir_pnet_pFN, list_subject_folder[i-1])
             # parameter
             maxIter = setting['FN_Computation']['Personalized_FN']['maxIter']
             minIter = setting['FN_Computation']['Personalized_FN']['minIter']

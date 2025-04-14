@@ -1,7 +1,6 @@
 # Yuncong Ma, 10/2/2023
 import os
 import sys
-
 parent_directory = os.path.abspath('..')
 sys.path.append(parent_directory)
 

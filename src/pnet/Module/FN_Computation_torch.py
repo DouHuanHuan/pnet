@@ -2,18 +2,20 @@
 # FN Computation module of pNet
 # Pytorch version
 
-import Module.GIG_ICA as GIG_ICA
-import Module.SR_NMF as SR_NMF
 #########################################
 # Packages
 import scipy.io as sio
-from Basic.Cluster_Computation import submit_bash_job
+
 # other functions of pNet
 from Module.Data_Input import *
 from Module.FN_Computation import check_gFN, bootstrap_scan, setup_pFN_folder
+import Module.GIG_ICA as GIG_ICA
+import Module.SR_NMF as SR_NMF
+from Basic.Cluster_Computation import submit_bash_job
 
 
 class setup_FN_Computation:
+
     setup_SR_NMF = SR_NMF.setup_SR_NMF
 
     setup_GIG_ICA = GIG_ICA.setup_GIG_ICA
@@ -94,9 +96,9 @@ def run_FN_Computation_torch(dir_pnet_result: str):
             combineScan = setting['FN_Computation']['Combine_Scan']
             init = setting['FN_Computation']['Group_FN']['BootStrap']['init']  # added on 08/03/2024
             samplingMethod = setting['FN_Computation']['Group_FN']['BootStrap']['samplingMethod']
-            sampleSize = setting['FN_Computation']['Group_FN']['BootStrap']['sampleSize']
             nBS = setting['FN_Computation']['Group_FN']['BootStrap']['nBS']
             nTPoints = setting['FN_Computation']['Group_FN']['BootStrap']['nTPoints']  # added on 08/01/2024
+            sampleSize = setting['FN_Computation']['Group_FN']['BootStrap']['sampleSize']
 
             # create scan lists for bootstrap
             bootstrap_scan(dir_pnet_BS, file_scan, file_subject_ID, file_subject_folder,
@@ -209,7 +211,7 @@ def run_FN_Computation_torch(dir_pnet_result: str):
             sio.savemat(os.path.join(dir_pnet_gFN, 'FN.mat'), {"FN": gFN}, do_compression=True)
             # save FNs in nii.gz and TC as txt file  FY 07/26/2024
             # won't save imaging data for pre-computed Group FNs
-            # output_FN(FN=gFN,
+            #output_FN(FN=gFN,
             #          file_output=os.path.join(dir_pnet_gFN, 'FN.mat'),
             #          file_brain_template = Brain_Template,
             #          dataFormat=dataFormat)
@@ -311,7 +313,7 @@ def run_FN_Computation_torch(dir_pnet_result: str):
         sio.savemat(os.path.join(dir_pnet_gFN, 'FN.mat'), {"FN": gFN}, do_compression=True)
         # save FNs in nii.gz and TC as txt file  FY 07/26/2024
         # won't save precomputed gFN
-        # output_FN(FN=gFN,
+        #output_FN(FN=gFN,
         #          file_output=os.path.join(dir_pnet_gFN, 'FN.mat'),
         #          file_brain_template = Brain_Template,
         #          dataFormat=dataFormat)
@@ -330,7 +332,7 @@ def run_FN_Computation_torch(dir_pnet_result: str):
         for i in range(1, N_Scan + 1):
             print(f'Start to compute pFNs for {i}-th folder: {list_subject_folder[i - 1]}', file=logFile_FNC,
                   flush=True)
-            dir_pnet_pFN_indv = os.path.join(dir_pnet_pFN, list_subject_folder[i - 1])
+            dir_pnet_pFN_indv = os.path.join(dir_pnet_pFN, list_subject_folder[i -1])
             # parameter
             maxIter = setting['FN_Computation']['Personalized_FN']['maxIter']
             a = setting['FN_Computation']['Personalized_FN']['a']
@@ -355,8 +357,7 @@ def run_FN_Computation_torch(dir_pnet_result: str):
                                                     Reshape=True, Brain_Mask=Brain_Mask, logFile=logFile)
 
             # perform GIG-ICA
-            TC, pFN = GIG_ICA.pFN_GIG_ICA_torch(Data, gFN, maxIter=maxIter_pFN, a=a, Nemda=Nemda, ftol=ftol,
-                                                error=error,
+            TC, pFN = GIG_ICA.pFN_GIG_ICA_torch(Data, gFN, maxIter=maxIter_pFN, a=a, Nemda=Nemda, ftol=ftol, error=error,
                                                 dataPrecision=dataPrecision, logFile=logFile)
             if not isinstance(pFN, np.ndarray):
                 pFN = pFN.numpy()
@@ -377,7 +378,6 @@ def run_FN_Computation_torch(dir_pnet_result: str):
         # ============================================= #
         print('Finished FN computation at ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())),
               file=logFile_FNC, flush=True)
-
 
 def run_FN_computation_torch_cluster(dir_pnet_result: str):
     """
@@ -542,7 +542,7 @@ def run_FN_computation_torch_cluster(dir_pnet_result: str):
             sio.savemat(os.path.join(dir_pnet_gFN, 'FN.mat'), {"FN": gFN}, do_compression=True)
             # save FNs in nii.gz and TC as txt file  FY 07/26/2024
             # won't save precomputed gFN
-            # output_FN(FN=gFN,
+            #output_FN(FN=gFN,
             #          file_output=os.path.join(dir_pnet_gFN, 'FN.mat'),
             #          file_brain_template = Brain_Template,
             #          dataFormat=dataFormat)
@@ -606,7 +606,7 @@ def run_FN_computation_torch_cluster(dir_pnet_result: str):
         sio.savemat(os.path.join(dir_pnet_gFN, 'FN.mat'), {"FN": gFN}, do_compression=True)
         # save FNs in nii.gz and TC as txt file  FY 07/26/2024
         # won't save pre-computed gFNs
-        # output_FN(FN=gFN,
+        #output_FN(FN=gFN,
         #          file_output=os.path.join(dir_pnet_gFN, 'FN.mat'),
         #          file_brain_template = Brain_Template,
         #          dataFormat=dataFormat, Cheader = CHeader, Nheader = NHeader)

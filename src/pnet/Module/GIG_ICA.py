@@ -7,9 +7,9 @@
 # Packages
 
 
-from Basic.Matrix_Computation import *
 # other functions of pNet
 from Module.Data_Input import *
+from Basic.Matrix_Computation import *
 
 
 def setup_GIG_ICA(dir_pnet_result: str or None, K=17, Combine_Scan=False, file_gFN=None,

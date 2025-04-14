@@ -1,4 +1,4 @@
-from setuptools import setup, find_namespace_packages
+from setuptools import setup, find_packages, find_namespace_packages
 
 with open("README.rst", "r") as fh:
     long_description = fh.read()
@@ -30,7 +30,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'ggplot',
-        'matplotlib',
+        'matplotlib', 
         'plotnine',
         'statsmodels',
         'surfplot',

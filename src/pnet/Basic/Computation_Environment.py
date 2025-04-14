@@ -2,8 +2,8 @@
 # Yuncong Ma, 8/15/2023
 
 
-import os
 import platform
+import os
 
 PNET_OS = platform.system()
 
