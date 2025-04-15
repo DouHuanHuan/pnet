@@ -6,9 +6,6 @@ import pnet
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi import File, UploadFile
 from fastapi.responses import JSONResponse
-from fastapi_limiter import FastAPILimiter
-from fastapi_limiter.depends import RateLimiter
-from redis.asyncio import Redis
 from rest_framework import status
 from sqlmodel import Session, select
 
@@ -16,7 +13,6 @@ from models import User
 from utils.auth import hash_password, verify_password, create_access_token, get_current_user
 from utils.config_parser import read_config
 from utils.database import init_db, get_session
-from utils.ip import get_client_ip
 
 app = FastAPI()
 init_db()
@@ -25,14 +21,7 @@ file_Brain_Template = "/home/wsl/anaconda3/envs/pNet/lib/python3.9/site-packages
 file_scans = "/HCP1200_10Surfs.txt"
 
 
-@app.on_event("startup")
-async def startup():
-    redis_uri = "redis://localhost:6379/0"
-    redis_connection = Redis.from_url(redis_uri)
-    await FastAPILimiter.init(redis_connection)
-
-
-@app.post("/register/", dependencies=[Depends(RateLimiter(times=5, seconds=60, identifier=get_client_ip))])
+@app.post("/register/")
 def register(username: str, password: str, session: Session = Depends(get_session)):
     user_exists = session.exec(select(User).where(User.username == username)).first()
     if user_exists:
