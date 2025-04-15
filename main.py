@@ -13,7 +13,7 @@ from rest_framework import status
 from sqlmodel import Session, select
 
 from models import User
-from utils.auth import hash_password, verify_password, create_access_token
+from utils.auth import hash_password, verify_password, create_access_token, get_current_user
 from utils.config_parser import read_config
 from utils.database import init_db, get_session
 from utils.ip import get_client_ip
@@ -71,21 +71,20 @@ def login(username: str, password: str, session: Session = Depends(get_session))
 
 
 @app.post("/run-pnet/")
-async def run_pnet_from_config(config_file: UploadFile = File(...)):
-    tmpdir = None  # Initialize tmpdir for cleanup
+async def run_pnet_from_config(
+        config_file: UploadFile = File(...),
+        current_user=Depends(get_current_user)
+):
+    tmpdir = None
 
     try:
-        # 使用临时目录保存配置文件
         with tempfile.TemporaryDirectory() as tmpdir:
-            # 保存配置文件
             config_path = os.path.join(tmpdir, config_file.filename)
             with open(config_path, "wb") as f:
                 shutil.copyfileobj(config_file.file, f)
 
-            # 解析配置文件
             config = read_config(config_path)
 
-            # 从配置中提取参数
             dataType = config['necessary_settings']['dataType']
             dataFormat = config['necessary_settings']['dataFormat']
             dir_pnet_result = config['necessary_settings']['dir_pnet_result']
@@ -93,11 +92,8 @@ async def run_pnet_from_config(config_file: UploadFile = File(...)):
             file_Brain_Template = config['necessary_settings']['file_Brain_Template']
             K = config['necessary_settings']['K']
             method = config['necessary_settings']['method']
-
-            if config['pFN_settings']['file_gFN'] == "None":
-                file_gFN = None
-            else:
-                file_gFN = config['pFN_settings']['file_gFN']
+            file_gFN = config['pFN_settings']['file_gFN']
+            file_gFN = None if file_gFN == "None" else file_gFN
 
             sampleSize = config['gFN_settings']['sampleSize']
             nBS = config['gFN_settings']['nBS']
@@ -107,20 +103,16 @@ async def run_pnet_from_config(config_file: UploadFile = File(...)):
             hpc_submit = config['hpc_settings']['submit']
             hpc_computation_resource = config['hpc_settings']['computation_resource']
 
-            # 从配置中读取文件路径
             path_template = file_Brain_Template
             path_scans = file_scans
             path_gfn = file_gFN
 
-            # 准备路径和运行
             result_dir = os.path.join(tmpdir, "pnet_result")
             os.makedirs(result_dir, exist_ok=True)
 
-            # 处理是否使用 HPC
-            HPC = False  # 这里是设置为 False，实际中你可以根据某些条件来判断
+            HPC = False
 
             if not HPC:
-                # 在本地执行 pnet.workflow
                 result = pnet.workflow(
                     dir_pnet_result=dir_pnet_result,
                     dataType=dataType,
@@ -140,7 +132,6 @@ async def run_pnet_from_config(config_file: UploadFile = File(...)):
                     Computation_Mode='CPU_Torch'
                 )
             else:
-                # 在 HPC 集群上执行 pnet.workflow_cluster
                 result = pnet.workflow_cluster(
                     dir_pnet_result=dir_pnet_result,
                     dataType=dataType,
@@ -168,13 +159,11 @@ async def run_pnet_from_config(config_file: UploadFile = File(...)):
                     computation_resource=hpc_computation_resource
                 )
 
-            # 返回结果
             return JSONResponse(content={"status": "success", "result_summary": str(result)})
 
     except Exception as e:
         return JSONResponse(content={"status": "error", "detail": str(e)}, status_code=500)
 
     finally:
-        # 确保临时目录被清理
         if tmpdir and os.path.exists(tmpdir):
             shutil.rmtree(tmpdir)
