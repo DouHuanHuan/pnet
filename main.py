@@ -8,7 +8,7 @@ from fastapi import File, UploadFile
 from fastapi.responses import JSONResponse
 from fastapi_limiter import FastAPILimiter
 from fastapi_limiter.depends import RateLimiter
-from limits.storage import MemoryStorage
+from redis.asyncio import Redis
 from rest_framework import status
 from sqlmodel import Session, select
 
@@ -27,8 +27,9 @@ file_scans = "/HCP1200_10Surfs.txt"
 
 @app.on_event("startup")
 async def startup():
-    storage = MemoryStorage()  # 使用内存存储，或者你可以使用 Redis 存储
-    await FastAPILimiter.init(storage)
+    redis_uri = "redis://localhost:6379/0"
+    redis_connection = Redis.from_url(redis_uri)
+    await FastAPILimiter.init(redis_connection)
 
 
 @app.post("/register/", dependencies=[Depends(RateLimiter(times=5, seconds=60, identifier=get_client_ip))])
