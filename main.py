@@ -9,10 +9,10 @@ from fastapi.responses import JSONResponse
 from rest_framework import status
 from sqlmodel import Session, select
 
-from auth import hash_password, verify_password, create_access_token
-from config_parser import read_config
-from database import init_db, get_session
 from models import User
+from utils.auth import hash_password, verify_password, create_access_token
+from utils.config_parser import read_config
+from utils.database import init_db, get_session
 
 app = FastAPI()
 init_db()
