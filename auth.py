@@ -16,7 +16,7 @@ def verify_password(plain_password, hashed_password):
 
 
 # JWT 设置
-SECRET_KEY = "your-secret-key"
+SECRET_KEY = "GHT04s5wDbH3H6C7A7jxvqD0INnk2ZhVh5rR8r1YXQs="
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 

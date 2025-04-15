@@ -6,6 +6,7 @@ import pnet
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi import File, UploadFile
 from fastapi.responses import JSONResponse
+from rest_framework import status
 from sqlmodel import Session, select
 
 from auth import hash_password, verify_password, create_access_token
@@ -29,7 +30,14 @@ def register(username: str, password: str, session: Session = Depends(get_sessio
     session.add(user)
     session.commit()
     session.refresh(user)
-    return {"msg": "User registered"}
+    return JSONResponse(
+        status_code=status.HTTP_201_CREATED,
+        content={
+            "id": user.id,
+            "username": user.username,
+            "url": f"/users/{user.id}"
+        }
+    )
 
 
 @app.post("/login/")
@@ -38,7 +46,18 @@ def login(username: str, password: str, session: Session = Depends(get_session))
     if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     access_token = create_access_token(data={"sub": user.username})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "access_token": access_token,
+            "token_type": "bearer",
+            "expires_in": 3600,
+            "user": {
+                "id": user.id,
+                "username": user.username
+            }
+        }
+    )
 
 
 @app.post("/run-pnet/")
@@ -149,4 +168,3 @@ async def run_pnet_from_config(config_file: UploadFile = File(...)):
         # 确保临时目录被清理
         if tmpdir and os.path.exists(tmpdir):
             shutil.rmtree(tmpdir)
-            # shutil.rmtree(config['necessary_settings']['dir_pnet_result'])
