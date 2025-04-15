@@ -3,7 +3,6 @@ import shutil
 import tempfile
 
 import pnet
-import tomli
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 
@@ -26,6 +25,7 @@ async def run_pnet_from_config(config_file: UploadFile = File(...)):
                 shutil.copyfileobj(config_file.file, f)
 
             # 解析配置文件
+            from server.config_parser import read_config
             config = read_config(config_path)
 
             # 从配置中提取参数
@@ -123,11 +123,3 @@ async def run_pnet_from_config(config_file: UploadFile = File(...)):
             shutil.rmtree(tmpdir)
             # shutil.rmtree(config['necessary_settings']['dir_pnet_result'])
 
-
-def read_config(file_path):
-    try:
-        with open(file_path, "rb") as f:
-            config = tomli.load(f)  # , 'owner')
-        return config  # necessary_settings, pFN_settings, gFN_settings, hpc_settings
-    except tomli.TOMLDecodeError:
-        print(f"errors in {file_path}.")
