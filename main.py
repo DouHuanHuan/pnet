@@ -3,14 +3,42 @@ import shutil
 import tempfile
 
 import pnet
-import tomli
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi import File, UploadFile
 from fastapi.responses import JSONResponse
+from sqlmodel import Session, select
+
+from auth import hash_password, verify_password, create_access_token
+from config_parser import read_config
+from database import init_db, get_session
+from models import User
 
 app = FastAPI()
+init_db()
 
 file_Brain_Template = "/home/wsl/anaconda3/envs/pNet/lib/python3.9/site-packages/pnet/Brain_Template/HCP_Surface/Brain_Template.json.zip"
 file_scans = "/HCP1200_10Surfs.txt"
+
+
+@app.post("/register/")
+def register(username: str, password: str, session: Session = Depends(get_session)):
+    user_exists = session.exec(select(User).where(User.username == username)).first()
+    if user_exists:
+        raise HTTPException(status_code=400, detail="Username already exists")
+    user = User(username=username, hashed_password=hash_password(password))
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return {"msg": "User registered"}
+
+
+@app.post("/login/")
+def login(username: str, password: str, session: Session = Depends(get_session)):
+    user = session.exec(select(User).where(User.username == username)).first()
+    if not user or not verify_password(password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    access_token = create_access_token(data={"sub": user.username})
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @app.post("/run-pnet/")
@@ -122,12 +150,3 @@ async def run_pnet_from_config(config_file: UploadFile = File(...)):
         if tmpdir and os.path.exists(tmpdir):
             shutil.rmtree(tmpdir)
             # shutil.rmtree(config['necessary_settings']['dir_pnet_result'])
-
-
-def read_config(file_path):
-    try:
-        with open(file_path, "rb") as f:
-            config = tomli.load(f)  # , 'owner')
-        return config  # necessary_settings, pFN_settings, gFN_settings, hpc_settings
-    except tomli.TOMLDecodeError:
-        print(f"errors in {file_path}.")

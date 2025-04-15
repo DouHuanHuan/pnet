@@ -1,7 +1,7 @@
 import toml
 
 
-def parse_config(file_path: str) -> dict:
+def read_config(file_path: str) -> dict:
     try:
         with open(file_path, "r") as f:
             config = toml.load(f)
