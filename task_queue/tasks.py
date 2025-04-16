@@ -8,9 +8,12 @@ from celery import Celery
 from utils.config_parser import read_config
 
 celery_app = Celery(
-    "pnet_tasks",
-    broker="redis://localhost:6379/0",
+    'pnet',
+    broker='redis://localhost:6379/0',
+    backend='redis://localhost:6379/0'
 )
+
+celery_app.autodiscover_tasks(['queue'])
 
 
 @celery_app.task

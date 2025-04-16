@@ -1,4 +1,3 @@
-import uvicorn
 from celery.result import AsyncResult
 from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi import File, UploadFile
@@ -11,10 +10,11 @@ from sqlmodel import Session, select
 
 from orm.models import User
 from orm.schema import UserCreateResponse
-from queue.tasks import run_pnet_background, celery_app
+from task_queue.tasks import run_pnet_background, celery_app
 from utils.auth import hash_password, verify_password, create_access_token, get_current_user
 from utils.database import init_db, get_session
 from utils.ip import get_client_ip
+from utils.runner import start_server
 
 app = FastAPI()
 init_db()
@@ -114,16 +114,4 @@ async def get_pnet_status(task_id: str):
 
 
 if __name__ == '__main__':
-    '''
-    curl -X POST "http://127.0.0.1:8000/run-pnet/" \
-    -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImV4cCI6MTc0NDcwMjQyOX0.gKr4D-yKHEIJhSqO-xnAfY8uM2kvzH7SrNuSyv2MrBI" \
-    -F "config_file=@/home/wsl/project/pnet/data/fmri_surf_hcp10subjs.toml" \
-    --max-time 600
-    '''
-    uvicorn.run(
-        "main:app",
-        host="127.0.0.1",
-        port=8000,
-        reload=True,
-        timeout_keep_alive=120
-    )
+    start_server()
