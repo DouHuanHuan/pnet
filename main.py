@@ -3,7 +3,8 @@ import shutil
 import tempfile
 
 import pnet
-from fastapi import FastAPI, Depends, HTTPException
+import uvicorn
+from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi import File, UploadFile
 from fastapi.responses import JSONResponse
 from fastapi_limiter import FastAPILimiter
@@ -12,7 +13,8 @@ from redis.asyncio import Redis
 from rest_framework import status
 from sqlmodel import Session, select
 
-from models import User
+from orm.models import User
+from orm.schema import UserCreateResponse
 from utils.auth import hash_password, verify_password, create_access_token, get_current_user
 from utils.config_parser import read_config
 from utils.database import init_db, get_session
@@ -33,30 +35,50 @@ async def startup():
 
 
 @app.post("/register/", dependencies=[Depends(RateLimiter(times=5, seconds=60, identifier=get_client_ip))])
-def register(username: str, password: str, session: Session = Depends(get_session)):
+async def register(request: Request, session: Session = Depends(get_session)):
+    body = await request.json()  # 获取请求体中的 JSON 数据
+    username = body.get('username')
+    password = body.get('password')
+
+    if not username or not password:
+        raise HTTPException(status_code=400, detail="Username and password are required")
+
+    # 检查用户名是否已存在
     user_exists = session.exec(select(User).where(User.username == username)).first()
     if user_exists:
         raise HTTPException(status_code=400, detail="Username already exists")
+
+    # 创建新用户
     user = User(username=username, hashed_password=hash_password(password))
     session.add(user)
     session.commit()
     session.refresh(user)
-    return JSONResponse(
-        status_code=status.HTTP_201_CREATED,
-        content={
-            "id": user.id,
-            "username": user.username,
-            "url": f"/users/{user.id}"
-        }
+
+    return UserCreateResponse(
+        id=user.id,
+        username=user.username,
+        url=f"/users/{user.id}"
     )
 
 
 @app.post("/login/")
-def login(username: str, password: str, session: Session = Depends(get_session)):
+async def login(request: Request, session: Session = Depends(get_session)):
+    body = await request.json()  # 异步获取请求体
+    username = body.get("username")
+    password = body.get("password")
+
+    if not username or not password:
+        raise HTTPException(status_code=400, detail="Username and password are required")
+
     user = session.exec(select(User).where(User.username == username)).first()
+
+    # 验证用户名和密码
     if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    # 创建访问令牌
     access_token = create_access_token(data={"sub": user.username})
+
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={
@@ -168,3 +190,19 @@ async def run_pnet_from_config(
     finally:
         if tmpdir and os.path.exists(tmpdir):
             shutil.rmtree(tmpdir)
+
+
+if __name__ == '__main__':
+    '''
+    curl -X POST "http://127.0.0.1:8000/run-pnet/" \
+    -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImV4cCI6MTc0NDcwMjQyOX0.gKr4D-yKHEIJhSqO-xnAfY8uM2kvzH7SrNuSyv2MrBI" \
+    -F "config_file=@/home/wsl/project/pnet/data/fmri_surf_hcp10subjs.toml" \
+    --max-time 600
+    '''
+    uvicorn.run(
+        "main:app",
+        host="127.0.0.1",
+        port=8000,
+        reload=True,
+        timeout_keep_alive=120
+    )

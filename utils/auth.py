@@ -7,7 +7,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlmodel import Session, select
 
-from models import User
+from orm.models import User
 from utils.database import get_session
 
 # 密码哈希设置
